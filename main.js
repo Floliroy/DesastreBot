@@ -9,6 +9,8 @@ const doc = new GoogleSpreadsheet('1D3m2R1TZxh8_5pbTz8SXNuKTDU9mUGZAxrvSjKEyjnI'
 bot.on('ready', () => {
     console.log(`RUNNING: ${bot.user.tag}`)
     bot.user.setActivity("faire du PvE")
+    //Fetch sur le message ajoutant un role par reaction
+    bot.channels.cache.get(channelsId.general).messages.fetch({around: messagesId.roles, limit: 1})
 })
 
 const nodeColors ={
@@ -22,12 +24,29 @@ const nodeColors ={
     white: "\x1b[37m",
     reset: "\x1b[0m",
 }
+//test 1 (696392072835498047)
+//test 2 (696392106272358480)
+//test 3 (696392133145395271)
 const rolesId = {
     //TODO : Changer pour les bons IDs de role
-    admin: "696392106272358480", //test 2
-    conseiller: "696392133145395271", //test 3
+    admin: "696392106272358480",
+    conseiller: "696392133145395271",
+    pc: "696392072835498047",
+    ps4: "696392106272358480",
+    xbox: "696392133145395271",
 }
-//Vérifié que la personne passé en paramètre ai un des rôles nécessaire
+//test role (696487695462957061)
+const messagesId = {
+    roles: "696487695462957061",
+}
+const channelsId = {
+    general: "696367866752139385",
+}
+//test server (696367866319994961)
+const serversId = {
+    desastre: "696367866319994961",
+}
+//Vérifie que la personne passé en paramètre ai un des rôles nécessaire
 function isAuthorised(member){
     let roles = member.roles.cache
     return roles.has(rolesId.admin) || roles.has(rolesId.conseiller)
@@ -89,11 +108,50 @@ bot.on('message', function (message) {
     }
 })
 
+//Listener quand quelqu'un ajoute une reaction 
+bot.on("messageReactionAdd", (reaction, user) => {
+    if(reaction.message.id != messagesId.roles) return
+
+    let member = reaction.message.guild.members.cache.get(user.id)
+    if(reaction.emoji.name === "🟠"){
+        console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
+        member.roles.add(rolesId.pc)
+    }else if(reaction.emoji.name === "🔵"){
+        console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PS4${nodeColors.reset}'`)
+        member.roles.add(rolesId.ps4)
+    }else if(reaction.emoji.name === "🟢"){
+        console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
+        member.roles.add(rolesId.xbox)
+    }else{
+        reaction.remove()
+    }
+})
+
+//Listener quand quelqu'un enleve une reaction 
+bot.on("messageReactionRemove", (reaction, user) => {
+    if(reaction.message.id != messagesId.roles) return
+
+    let member = reaction.message.guild.members.cache.get(user.id)
+    if(reaction.emoji.name === "🟠"){
+        console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PC${nodeColors.reset}'`)
+        member.roles.remove(rolesId.pc)
+    }else if(reaction.emoji.name === "🔵"){
+        console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PS4${nodeColors.reset}'`)
+        member.roles.remove(rolesId.ps4)
+    }else if(reaction.emoji.name === "🟢"){
+        console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
+        member.roles.remove(rolesId.xbox)
+    }
+})
+
+
 //Listener quand quelqu'un rejoint le serveur
 bot.on('guildMemberAdd', member => {
     //On lui envoit un message de bienvenue
     let messageEmbed = new Discord.MessageEmbed()
     .setTitle("Bienvenue sur le super Discord de DesastreShow !")
+
+    console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' got his welcome message`)
     sendPrivateMessage(member, messageEmbed)
 })
 
