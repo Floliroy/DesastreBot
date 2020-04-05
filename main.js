@@ -41,7 +41,7 @@ function sendPrivateMessage(member, message){
 
 //Listener quand un message est envoyé sur le serveur
 bot.on('message', function (message) {
-    if(message.author === bot.user) return
+    if(message.author === bot.user || message.channel instanceof Discord.DMChannel) return
     //On vérifie que c'est une commande qui est tapé
     if(message.content.startsWith("!")){
         //On prépare les credantials de google
