@@ -10,7 +10,7 @@ bot.on('ready', () => {
     console.log(`RUNNING: ${bot.user.tag}`)
     bot.user.setActivity("faire du PvE")
     //Fetch sur le message ajoutant un role par reaction
-    bot.channels.cache.get(channelsId.general).messages.fetch({around: messagesId.roles, limit: 1})
+    bot.channels.cache.get(channelsId.general).messages.fetch(messagesId.roles)
 })
 
 const nodeColors ={
