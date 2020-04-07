@@ -1,6 +1,8 @@
 # DesastreBot
  Bot Discord pour le serveur de DesastreShow<br>
 
+- Version 1.0.2 :<br>
+Ajout d'une fonction permettant un tirage au sorts sur les réactions d'un message donné<br>
 
 - Version 1.0.1 :<br>
 Ajout d'une fonction ajoutant et enlevant des roles en fonction des réactions a un message<br>

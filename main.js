@@ -39,6 +39,7 @@ const rolesId = {
 const messagesId = {
     roles: "696487695462957061",
 }
+//test general (696367866752139385)
 const channelsId = {
     general: "696367866752139385",
 }
@@ -61,8 +62,23 @@ function sendPrivateMessage(member, message){
 //Listener quand un message est envoyé sur le serveur
 bot.on('message', function (message) {
     if(message.author === bot.user || message.channel instanceof Discord.DMChannel) return
+    if(message.content.startsWith("!rand ")){
+        const args = message.content.split(" ")
+        bot.channels.cache.get(channelsId.general).messages.fetch(args[1]).then(msg => {
+            const reaction = msg.reactions.cache.get('✅')
+
+            reaction.users.fetch().then(users => {
+                const winner = users.random(1)[0];
+                message.delete()
+                console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
+                            + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results, `
+                            + `and the winner is '${nodeColors.red}${winner.username}#${winner.discriminator}${nodeColors.reset}'`)
+                message.channel.send(`Bravo <@${winner.id}>, tu as gagné !`)
+            })
+        })
+
     //On vérifie que c'est une commande qui est tapé
-    if(message.content.startsWith("!")){
+    }else if(message.content.startsWith("!")){
         //On prépare les credantials de google
         const creds = {
             client_email: process.env.GOOGLE_EMAIL, 
