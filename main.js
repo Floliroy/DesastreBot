@@ -169,7 +169,7 @@ bot.on('guildMemberAdd', member => {
     let messageEmbed = new Discord.MessageEmbed()
     .setTitle("Bienvenue sur le super Discord de DesastreShow !")
 
-    //console.log(`LOG: '${nodeColors.green}${member.tag}${nodeColors.reset}' got his welcome message`)
+    console.log(`LOG: '${nodeColors.green}${member.user.tag}${nodeColors.reset}' got his welcome message`)
     sendPrivateMessage(member, messageEmbed)
 })
 
