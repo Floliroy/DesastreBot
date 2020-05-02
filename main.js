@@ -112,7 +112,12 @@ bot.on('message', function (message) {
                                 }else{
                                     messageEmbed.setImage(row.image)
                                 }
-                                return message.channel.send(messageEmbed)
+                                //Si c'est la commande help on envoit en mp
+                                if(row.commande == "!help"){
+                                    sendPrivateMessage(message.member, messageEmbed)
+                                }else{
+                                    return message.channel.send(messageEmbed)
+                                }
                             }else{
                                 return message.channel.send(row.message)
                             }   
