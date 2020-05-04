@@ -8,7 +8,7 @@ const doc = new GoogleSpreadsheet('1D3m2R1TZxh8_5pbTz8SXNuKTDU9mUGZAxrvSjKEyjnI'
 
 bot.on('ready', () => {
     console.log(`RUNNING: ${bot.user.tag}`)
-    bot.user.setActivity("faire du PvE")
+    bot.user.setActivity("DesastreShow", {type: "WATCHING"})
     //Fetch sur le message ajoutant un role par reaction
     bot.channels.cache.get(channelsId.general).messages.fetch(messagesId.roles)
 })
@@ -35,9 +35,9 @@ const rolesId = {
     ps4: "696392106272358480",
     xbox: "696392133145395271",
 }
-//test role (696487695462957061)
+//test role (706565906104320110)
 const messagesId = {
-    roles: "696487695462957061",
+    roles: "706565906104320110",
 }
 //test general (696367866752139385)
 const channelsId = {
