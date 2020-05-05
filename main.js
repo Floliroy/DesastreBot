@@ -76,7 +76,7 @@ bot.on('message', function (message) {
                 message.channel.send(`Bravo <@${winner.id}>, tu as gagné !`)
             })
         }).catch(function(err) {
-            sendPrivateMessage(message.member, `L'ID du message '${args[1]}' est inconnue...`)
+            sendPrivateMessage(message.member, `L'ID du message '${args[1]}' est incorrecte...`)
         })
 
     //On vérifie que c'est une commande qui est tapé
