@@ -8,12 +8,12 @@ const doc = new GoogleSpreadsheet('1D3m2R1TZxh8_5pbTz8SXNuKTDU9mUGZAxrvSjKEyjnI'
 
 bot.on('ready', () => {
     console.log(`RUNNING: ${bot.user.tag}`)
-    bot.user.setActivity("DesastreShow", {type: "WATCHING"}).catch(function(err) {
+    bot.user.setActivity("DesastreShow", {type: "WATCHING"})
+    //Fetch sur le message ajoutant un role par reaction
+    bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles).catch(function(err) {
         console.log("Aled")
         console.log(err)
     })
-    //Fetch sur le message ajoutant un role par reaction
-    bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
 })
 
 const nodeColors ={
@@ -56,7 +56,7 @@ const usersID = {
 //Vérifie que la personne passé en paramètre ai un des rôles nécessaire
 function isAuthorised(member){
     let roles = member.roles.cache
-    return roles.has(rolesId.admin) || roles.has(rolesId.modo) || roles.has(rolesId.conseiller) || roles.has(rolesId.helpeur)  || roles.has(rolesId.sub)
+    return roles.has(rolesId.admin) || roles.has(rolesId.modo) || roles.has(rolesId.conseiller) || roles.has(rolesId.helpeur) || roles.has(rolesId.sub)
 }
 //Permet d'envoyer un message privé à la personne passé en paramètre
 function sendPrivateMessage(member, message){
