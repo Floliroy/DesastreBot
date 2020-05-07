@@ -10,10 +10,7 @@ bot.on('ready', () => {
     console.log(`RUNNING: ${bot.user.tag}`)
     bot.user.setActivity("DesastreShow", {type: "WATCHING"})
     //Fetch sur le message ajoutant un role par reaction
-    bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles).catch(function(err) {
-        console.log("Aled")
-        console.log(err)
-    })
+    bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
 })
 
 const nodeColors ={
@@ -41,7 +38,7 @@ const rolesId = {
 }
 
 const messagesId = {
-    roles: "", //TODO
+    roles: "707955881677029446",
 }
 
 const channelsId = {
