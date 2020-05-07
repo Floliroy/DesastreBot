@@ -8,7 +8,10 @@ const doc = new GoogleSpreadsheet('1D3m2R1TZxh8_5pbTz8SXNuKTDU9mUGZAxrvSjKEyjnI'
 
 bot.on('ready', () => {
     console.log(`RUNNING: ${bot.user.tag}`)
-    bot.user.setActivity("DesastreShow", {type: "WATCHING"})
+    bot.user.setActivity("DesastreShow", {type: "WATCHING"}).catch(function(err) {
+        console.log("Aled")
+        console.log(err)
+    })
     //Fetch sur le message ajoutant un role par reaction
     bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
 })
@@ -179,9 +182,9 @@ bot.on('guildMemberAdd', member => {
     .setDescription(`Prenez 2 minutes pour lire les <#${channelsId.regles}> et indiquer votre plateforme pour avoir accès à la totalité du Discord.\n` +
                     "Vous trouverez des canaux écrits pour discuter, partager et demander des conseils sur TESO.\n" +
                     "Des canaux vocaux sont également a votre disposition pour jouer avec vos amis.\n\n" +
-                    "Desastre est en Live tous les jours de 20h à 23h à cette adresse : https://www.twitch.tv/desastre_show\n" +
+                    "Desastre est en Live tous les jours de 20h à 23h sur Twitch : https://www.twitch.tv/desastre_show\n" +
                     "Vous trouverez des Builds à jours, des Guides et Tutoriels sur https://desastreshow.com\n" +
-                    "Pour ceux qui préfère les vidéos, vous trouverez des Guides du Débutant, des infos et des news sur YouTube.")
+                    "Pour ceux qui préfère les vidéos, vous trouverez des Guides du Débutant, des infos et des news sur sa chaîne YouTube : https://www.youtube.com/c/Desastre")
     .setThumbnail("https://i.ibb.co/qd3dW39/Logo-carr-Desastreshow.png")
 
     console.log(`LOG: '${nodeColors.green}${member.user.tag}${nodeColors.reset}' got his welcome message`)
