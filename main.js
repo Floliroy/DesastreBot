@@ -182,7 +182,7 @@ bot.on('guildMemberAdd', member => {
                     "Desastre est en Live tous les jours de 20h à 23h à cette adresse : https://www.twitch.tv/desastre_show\n" +
                     "Vous trouverez des Builds à jours, des Guides et Tutoriels sur https://desastreshow.com\n" +
                     "Pour ceux qui préfère les vidéos, vous trouverez des Guides du Débutant, des infos et des news sur YouTube.")
-    .setThumbnail("https://ibb.co/R9k9BkP")
+    .setThumbnail("https://i.ibb.co/qd3dW39/Logo-carr-Desastreshow.png")
 
     console.log(`LOG: '${nodeColors.green}${member.user.tag}${nodeColors.reset}' got his welcome message`)
     sendPrivateMessage(member, messageEmbed)
