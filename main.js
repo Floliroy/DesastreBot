@@ -72,7 +72,7 @@ bot.on('message', function (message) {
             const reaction = msg.reactions.cache.get('✅')
 
             reaction.users.fetch().then(users => {
-                const winner = users.random(1)[0];
+                const winner = users.random()
                 message.delete()
                 console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
                             + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results, `
