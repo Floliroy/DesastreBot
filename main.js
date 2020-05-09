@@ -43,11 +43,12 @@ const messagesId = {
 
 const channelsId = {
     regles: "489125908666515456",
-    giveaway : "", //TODO
+    giveaway : "708625146432454707",
 }
 
 const usersID = {
     desastre: "146003404840239104",
+    floliroy: "112632359207108608",
 }
 
 //Vérifie que la personne passé en paramètre ai un des rôles nécessaire
@@ -65,7 +66,7 @@ function sendPrivateMessage(member, message){
 //Listener quand un message est envoyé sur le serveur
 bot.on('message', function (message) {
     if(message.author === bot.user || message.channel instanceof Discord.DMChannel) return
-    if(message.content.startsWith("!rand ") && message.author.id == usersID.desastre){
+    if(message.content.startsWith("!rand ") && (message.author.id == usersID.desastre || message.author.id == usersID.floliroy)){
         const args = message.content.split(" ")
         bot.channels.cache.get(channelsId.giveaway).messages.fetch(args[1]).then(msg => {
             const reaction = msg.reactions.cache.get('✅')
