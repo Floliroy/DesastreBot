@@ -63,6 +63,78 @@ function sendPrivateMessage(member, message){
     })
 }
 
+//Permet de récupérer une personne aléatoire parmis 100 réactions max d'un message
+async function getRandom(winners, startId, isSubRand, reaction, message){
+    let returnId
+    await reaction.users.fetch({after: startId}).then(users => {
+        console.log(users.size)
+        let winner
+
+        if(isSubRand){
+            let atLeastOneSub = false
+
+            users.some(function(user){
+                let member = message.guild.members.cache.get(user.id)
+                if(member.roles.cache.has(rolesId.sub)){
+                    atLeastOneSub = true
+                    return true
+                }
+                return false
+            })
+
+            if(atLeastOneSub){
+                let isSub = false
+                do{
+                    winner = users.random()
+                    let member = message.guild.members.cache.get(winner.id)
+                    isSub = member.roles.cache.has(rolesId.sub)
+                }while(!isSub)
+            }
+        }else{
+            winner = users.random()
+        }
+
+        if(winner){
+            winners.push(winner)
+        }
+
+        returnId = users.last().id
+    })
+    return returnId
+}
+
+//Permet de récupérer une liste de gagnant parmis toutes les réactions d'un message
+async function getWinners(isSubRand, reaction, message){
+    let winners = new Array()
+
+    let lastId
+    for(let i=0 ; i<Math.floor(reaction.count/100)+1 ; i++){
+        lastId = await getRandom(winners, (lastId?lastId:0), isSubRand, reaction, message)
+    }
+
+    return winners
+}
+
+//Permet d'afficher le gagnant d'un giveaway
+async function runGiveaway(isSubRand, reaction, message){
+    let winners = await getWinners(isSubRand, reaction, message)
+    const winner = winners[Math.floor(Math.random() * winners.length)]
+
+    message.delete()
+
+    if(isSubRand && !winner){
+        console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
+            + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results`
+            + `, but there is no '${nodeColors.red}Winner${nodeColors.reset}'`)
+        message.channel.send(`Pas de gagnant éligible pour ce tirage au sort ...`)
+    }else{
+        console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
+            + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results`
+            + `, and the winner is '${nodeColors.red}${winner.username}#${winner.discriminator}${nodeColors.reset}'`)
+        message.channel.send(`Bravo <@${winner.id}>, tu as gagné !`)
+    }
+}
+
 //Listener quand un message est envoyé sur le serveur
 bot.on('message', function (message) {
     if(message.author.bot || message.channel instanceof Discord.DMChannel) return
@@ -72,42 +144,13 @@ bot.on('message', function (message) {
     //////////////////////
     if(message.content.startsWith("!rand ") && (message.author.id === usersID.desastre || message.author.id === usersID.floliroy)){
         const args = message.content.split(" ")
-        let channelId = args[1] === "sub" ? args[2] : args[1]
+        let isSubRand = args[1] === "sub"
+        let channelId = isSubRand ? args[2] : args[1]
+
         bot.channels.cache.get(channelsId.giveaway).messages.fetch(channelId).then(msg => {
-            const reaction = msg.reactions.cache.get('✅')
-
-            reaction.users.fetch().then(users => {
-                let winner
-
-                let cpt = 0
-                let isSub = false
-                if(args[1] === "sub"){
-                    do{
-                        winner = users.random()
-                        let member = message.guild.members.cache.get(winner.id)
-                        isSub = member.roles.cache.has(rolesId.sub)
-                        cpt++;
-                    }while(!isSub && cpt<reaction.count)
-                }else{
-                    winner = users.random()
-                }
-
-                message.delete()
-                
-                if(args[1] === "sub" && !isSub){
-                    console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
-                        + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results`
-                        + (args[1] === "sub" ? ` on '${nodeColors.blue}${cpt}${nodeColors.reset}' sub turn` : "")
-                        + `, but there is no '${nodeColors.red}winner${nodeColors.reset}'`)
-                    message.channel.send(`Pas de gagnant éligible pour ce tirage au sort ...`)
-                }else{
-                    console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
-                        + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results`
-                        + (args[1] === "sub" ? ` on '${nodeColors.blue}${cpt}${nodeColors.reset}' sub turn` : "")
-                        + `, and the winner is '${nodeColors.red}${winner.username}#${winner.discriminator}${nodeColors.reset}'`)
-                    message.channel.send(`Bravo <@${winner.id}>, tu as gagné !`)
-                }
-            })
+            const reaction = msg.reactions.cache.get("✅")
+            runGiveaway(isSubRand, reaction, message)
+            
         }).catch(function(err) {
             sendPrivateMessage(message.member, `L'ID du message '${channelId}' est incorrecte...`)
         })
