@@ -75,7 +75,7 @@ async function getRandom(winners, startId, isSubRand, reaction, message){
 
             users.some(function(user){
                 let member = message.guild.members.cache.get(user.id)
-                if(member.roles.cache.has(rolesId.admin)){
+                if(member.roles.cache.has(rolesId.sub)){
                     atLeastOneSub = true
                     return true
                 }
@@ -87,7 +87,7 @@ async function getRandom(winners, startId, isSubRand, reaction, message){
                 do{
                     winner = users.random()
                     let member = message.guild.members.cache.get(winner.id)
-                    isSub = member.roles.cache.has(rolesId.admin)
+                    isSub = member.roles.cache.has(rolesId.sub)
                 }while(!isSub)
             }
         }else{
