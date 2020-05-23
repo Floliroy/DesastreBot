@@ -67,7 +67,7 @@ function sendPrivateMessage(member, message){
 async function getRandom(winners, startId, isSubRand, reaction, message){
     let returnId
     await reaction.users.fetch({after: startId}).then(users => {
-        console.log(users.size)
+        console.log(`LOG : Fetch ${users.size} users ...`)
         let winner
 
         if(isSubRand){
@@ -75,7 +75,7 @@ async function getRandom(winners, startId, isSubRand, reaction, message){
 
             users.some(function(user){
                 let member = message.guild.members.cache.get(user.id)
-                if(member.roles.cache.has(rolesId.sub)){
+                if(member.roles.cache.has(rolesId.admin)){
                     atLeastOneSub = true
                     return true
                 }
@@ -87,7 +87,7 @@ async function getRandom(winners, startId, isSubRand, reaction, message){
                 do{
                     winner = users.random()
                     let member = message.guild.members.cache.get(winner.id)
-                    isSub = member.roles.cache.has(rolesId.sub)
+                    isSub = member.roles.cache.has(rolesId.admin)
                 }while(!isSub)
             }
         }else{
