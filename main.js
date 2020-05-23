@@ -65,24 +65,56 @@ function sendPrivateMessage(member, message){
 
 //Listener quand un message est envoyé sur le serveur
 bot.on('message', function (message) {
-    if(message.author === bot.user || message.channel instanceof Discord.DMChannel) return
-    if(message.content.startsWith("!rand ") && (message.author.id == usersID.desastre || message.author.id == usersID.floliroy)){
+    if(message.author.bot || message.channel instanceof Discord.DMChannel) return
+
+    //////////////////////
+    //// GIVEAWAY ALL ////
+    //////////////////////
+    if(message.content.startsWith("!rand ") && (message.author.id === usersID.desastre || message.author.id === usersID.floliroy)){
         const args = message.content.split(" ")
-        bot.channels.cache.get(channelsId.giveaway).messages.fetch(args[1]).then(msg => {
+        let channelId = args[1] === "sub" ? args[2] : args[1]
+        bot.channels.cache.get(channelsId.giveaway).messages.fetch(channelId).then(msg => {
             const reaction = msg.reactions.cache.get('✅')
 
             reaction.users.fetch().then(users => {
-                const winner = users.random()
+                let winner
+
+                let cpt = 0
+                let isSub = false
+                if(args[1] === "sub"){
+                    do{
+                        winner = users.random()
+                        let member = message.guild.members.cache.get(winner.id)
+                        isSub = member.roles.cache.has(rolesId.sub)
+                        cpt++;
+                    }while(!isSub && cpt<reaction.count)
+                }else{
+                    winner = users.random()
+                }
+
                 message.delete()
-                console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
-                            + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results, `
-                            + `and the winner is '${nodeColors.red}${winner.username}#${winner.discriminator}${nodeColors.reset}'`)
-                message.channel.send(`Bravo <@${winner.id}>, tu as gagné !`)
+                
+                if(args[1] === "sub" && !isSub){
+                    console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
+                        + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results`
+                        + (args[1] === "sub" ? ` on '${nodeColors.blue}${cpt}${nodeColors.reset}' sub turn` : "")
+                        + `, but there is no '${nodeColors.red}winner${nodeColors.reset}'`)
+                    message.channel.send(`Pas de gagnant éligible pour ce tirage au sort ...`)
+                }else{
+                    console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
+                        + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results`
+                        + (args[1] === "sub" ? ` on '${nodeColors.blue}${cpt}${nodeColors.reset}' sub turn` : "")
+                        + `, and the winner is '${nodeColors.red}${winner.username}#${winner.discriminator}${nodeColors.reset}'`)
+                    message.channel.send(`Bravo <@${winner.id}>, tu as gagné !`)
+                }
             })
         }).catch(function(err) {
-            sendPrivateMessage(message.member, `L'ID du message '${args[1]}' est incorrecte...`)
+            sendPrivateMessage(message.member, `L'ID du message '${channelId}' est incorrecte...`)
         })
 
+    ////////////////////////
+    //// COMMANDES GDOC ////
+    ////////////////////////
     //On vérifie que c'est une commande qui est tapé
     }else if(message.content.startsWith("!")){
         //On prépare les credantials de google
@@ -111,13 +143,13 @@ bot.on('message', function (message) {
                                 .setTitle(row.titre)
                                 .setDescription(row.message)
                                 //On regarde si l'image est une Miniature ou non
-                                if(row.miniature == "TRUE"){
+                                if(row.miniature === "TRUE"){
                                     messageEmbed.setThumbnail(row.image)
                                 }else{
                                     messageEmbed.setImage(row.image)
                                 }
                                 //Si c'est la commande help on envoit en mp
-                                if(row.commande == "!help"){
+                                if(row.commande === "!help"){
                                     sendPrivateMessage(message.member, messageEmbed)
                                 }else{
                                     return message.channel.send(messageEmbed)
