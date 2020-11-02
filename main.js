@@ -214,40 +214,49 @@ bot.on('message', function (message) {
 bot.on("messageReactionAdd", (reaction, user) => {
     if(reaction.message.id != messagesId.roles) return
 
-    let member = reaction.message.guild.members.cache.get(user.id)
-    if(member){
-        if(reaction.emoji.name === "🟠"){
-            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
-            member.roles.add(rolesId.pc)
-        }else if(reaction.emoji.name === "🔵"){
-            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PS4${nodeColors.reset}'`)
-            member.roles.add(rolesId.ps4)
-        }else if(reaction.emoji.name === "🟢"){
-            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
-            member.roles.add(rolesId.xbox)
+    reaction.message.guild.members.cache.get(user.id).then(member => {
+        if(member){
+            if(reaction.emoji.name === "🟠"){
+                console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
+                member.roles.add(rolesId.pc)
+            }else if(reaction.emoji.name === "🔵"){
+                console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PS4${nodeColors.reset}'`)
+                member.roles.add(rolesId.ps4)
+            }else if(reaction.emoji.name === "🟢"){
+                console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
+                member.roles.add(rolesId.xbox)
+            }else{
+                reaction.remove()
+            }
         }else{
-            reaction.remove()
+            console.log(`ERROR: ${nodeColors.green}${user.tag}${nodeColors.reset} tried to gain role`)
+            console.log(user)
         }
-    }
+    })
 })
 
 //Listener quand quelqu'un enleve une reaction 
 bot.on("messageReactionRemove", (reaction, user) => {
     if(reaction.message.id != messagesId.roles) return
 
-    let member = reaction.message.guild.members.cache.get(user.id)
-    if(member){
-        if(reaction.emoji.name === "🟠"){
-            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PC${nodeColors.reset}'`)
-            member.roles.remove(rolesId.pc)
-        }else if(reaction.emoji.name === "🔵"){
-            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PS4${nodeColors.reset}'`)
-            member.roles.remove(rolesId.ps4)
-        }else if(reaction.emoji.name === "🟢"){
-            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
-            member.roles.remove(rolesId.xbox)
+    reaction.message.guild.members.cache.get(user.id).then(member => {
+        if(member){
+            if(reaction.emoji.name === "🟠"){
+                console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PC${nodeColors.reset}'`)
+                member.roles.remove(rolesId.pc)
+            }else if(reaction.emoji.name === "🔵"){
+                console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PS4${nodeColors.reset}'`)
+                member.roles.remove(rolesId.ps4)
+            }else if(reaction.emoji.name === "🟢"){
+                console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
+                member.roles.remove(rolesId.xbox)
+            }
+        }else{
+            console.log(`ERROR: ${nodeColors.green}${user.tag}${nodeColors.reset} tried to remove role`)
+            console.log(user)
         }
-    }
+    })
+    
 })
 
 
