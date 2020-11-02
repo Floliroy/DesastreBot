@@ -217,6 +217,9 @@ async function getMemberById(reaction, id){
 //Listener quand quelqu'un ajoute une reaction 
 bot.on("messageReactionAdd", (reaction, user) => {
     if(reaction.message.id != messagesId.roles) return
+    addRole(reaction, user)
+})
+async function addRole(reaction, user){
     console.log("Test 1")
     let member = await getMemberById(reaction, user.id)
     console.log("Test 2")
@@ -237,12 +240,15 @@ bot.on("messageReactionAdd", (reaction, user) => {
         console.log(`ERROR: ${nodeColors.green}${user.tag}${nodeColors.reset} tried to gain role`)
         console.log(user)
     }
-})
+}
+
 
 //Listener quand quelqu'un enleve une reaction 
 bot.on("messageReactionRemove", (reaction, user) => {
     if(reaction.message.id != messagesId.roles) return
-
+    removeRole(reaction, user)
+})
+async function removeRole(reaction, user){
     let member = await getMemberById(reaction, user.id)
     if(member){
         if(reaction.emoji.name === "🟠"){
@@ -259,8 +265,7 @@ bot.on("messageReactionRemove", (reaction, user) => {
         console.log(`ERROR: ${nodeColors.green}${user.tag}${nodeColors.reset} tried to remove role`)
         console.log(user)
     }
-})
-
+}
 
 //Listener quand quelqu'un rejoint le serveur
 bot.on('guildMemberAdd', member => {
