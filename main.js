@@ -216,8 +216,7 @@ async function getMemberById(reaction, id){
 
 //Listener quand quelqu'un ajoute une reaction 
 bot.on("messageReactionAdd", (reaction, user) => {
-    console.log(reaction.message.id)
-    console.log(messagesId.roles)
+    bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
     if(reaction.message.id != messagesId.roles) return
     addRole(reaction, user)
 })
@@ -245,6 +244,7 @@ async function addRole(reaction, user){
 
 //Listener quand quelqu'un enleve une reaction 
 bot.on("messageReactionRemove", (reaction, user) => {
+    bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
     if(reaction.message.id != messagesId.roles) return
     removeRole(reaction, user)
 })
