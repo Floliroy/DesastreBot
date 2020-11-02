@@ -63,17 +63,14 @@ function sendPrivateMessage(member, message){
     })
 }
 
-async function getMemberById(reaction, id){
-    return await reaction.message.guild.members.cache.get(id)
-}
-
 //Listener quand quelqu'un ajoute une reaction 
 bot.on("messageReactionAdd", (reaction, user) => {
     if(reaction.message.id != messagesId.roles) return
+    
     addRole(reaction, user)
 })
 async function addRole(reaction, user){
-    let member = await getMemberById(reaction, user.id)
+    let member = await reaction.message.guild.members.cache.get(id)
     if(member){
         if(reaction.emoji.name === "🟠"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
@@ -96,10 +93,11 @@ async function addRole(reaction, user){
 //Listener quand quelqu'un enleve une reaction 
 bot.on("messageReactionRemove", (reaction, user) => {
     if(reaction.message.id != messagesId.roles) return
+    
     removeRole(reaction, user)
 })
 async function removeRole(reaction, user){
-    let member = await getMemberById(reaction, user.id)
+    let member = await reaction.message.guild.members.cache.get(id)
     if(member){
         if(reaction.emoji.name === "🟠"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PC${nodeColors.reset}'`)
