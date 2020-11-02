@@ -10,8 +10,8 @@
   "author": "Floliroy",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.1.1",
+    "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
-    "google-spreadsheet": "^2.0.8"
+    "google-spreadsheet": "^2.0.9"
   }
 }

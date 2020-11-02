@@ -13,7 +13,7 @@ bot.on('ready', () => {
     bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
 })
 
-const nodeColors ={
+const nodeColors = {
     black: "\x1b[30m",
     red: "\x1b[31m",
     green: "\x1b[32m",
@@ -51,7 +51,6 @@ const usersID = {
     floliroy: "112632359207108608",
 }
 
-
 //Vérifie que la personne passé en paramètre ai un des rôles nécessaire
 function isAuthorised(member){
     let roles = member.roles.cache
@@ -70,7 +69,6 @@ async function getMemberById(reaction, id){
 
 //Listener quand quelqu'un ajoute une reaction 
 bot.on("messageReactionAdd", (reaction, user) => {
-    bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
     if(reaction.message.id != messagesId.roles) return
     addRole(reaction, user)
 })
@@ -95,10 +93,8 @@ async function addRole(reaction, user){
     }
 }
 
-
 //Listener quand quelqu'un enleve une reaction 
 bot.on("messageReactionRemove", (reaction, user) => {
-    bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
     if(reaction.message.id != messagesId.roles) return
     removeRole(reaction, user)
 })
