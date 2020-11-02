@@ -215,17 +215,19 @@ bot.on("messageReactionAdd", (reaction, user) => {
     if(reaction.message.id != messagesId.roles) return
 
     let member = reaction.message.guild.members.cache.get(user.id)
-    if(reaction.emoji.name === "🟠"){
-        console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
-        member.roles.add(rolesId.pc)
-    }else if(reaction.emoji.name === "🔵"){
-        console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PS4${nodeColors.reset}'`)
-        member.roles.add(rolesId.ps4)
-    }else if(reaction.emoji.name === "🟢"){
-        console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
-        member.roles.add(rolesId.xbox)
-    }else{
-        reaction.remove()
+    if(member){
+        if(reaction.emoji.name === "🟠"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
+            member.roles.add(rolesId.pc)
+        }else if(reaction.emoji.name === "🔵"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PS4${nodeColors.reset}'`)
+            member.roles.add(rolesId.ps4)
+        }else if(reaction.emoji.name === "🟢"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
+            member.roles.add(rolesId.xbox)
+        }else{
+            reaction.remove()
+        }
     }
 })
 
@@ -234,15 +236,17 @@ bot.on("messageReactionRemove", (reaction, user) => {
     if(reaction.message.id != messagesId.roles) return
 
     let member = reaction.message.guild.members.cache.get(user.id)
-    if(reaction.emoji.name === "🟠"){
-        console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PC${nodeColors.reset}'`)
-        member.roles.remove(rolesId.pc)
-    }else if(reaction.emoji.name === "🔵"){
-        console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PS4${nodeColors.reset}'`)
-        member.roles.remove(rolesId.ps4)
-    }else if(reaction.emoji.name === "🟢"){
-        console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
-        member.roles.remove(rolesId.xbox)
+    if(member){
+        if(reaction.emoji.name === "🟠"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PC${nodeColors.reset}'`)
+            member.roles.remove(rolesId.pc)
+        }else if(reaction.emoji.name === "🔵"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PS4${nodeColors.reset}'`)
+            member.roles.remove(rolesId.ps4)
+        }else if(reaction.emoji.name === "🟢"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
+            member.roles.remove(rolesId.xbox)
+        }
     }
 })
 
