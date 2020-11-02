@@ -51,6 +51,7 @@ const usersID = {
     floliroy: "112632359207108608",
 }
 
+
 //Vérifie que la personne passé en paramètre ai un des rôles nécessaire
 function isAuthorised(member){
     let roles = member.roles.cache
@@ -62,6 +63,80 @@ function sendPrivateMessage(member, message){
         DMChannel.send(message)
     })
 }
+
+async function getMemberById(reaction, id){
+    return await reaction.message.guild.members.cache.get(id)
+}
+
+//Listener quand quelqu'un ajoute une reaction 
+bot.on("messageReactionAdd", (reaction, user) => {
+    bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
+    if(reaction.message.id != messagesId.roles) return
+    addRole(reaction, user)
+})
+async function addRole(reaction, user){
+    let member = await getMemberById(reaction, user.id)
+    if(member){
+        if(reaction.emoji.name === "🟠"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
+            member.roles.add(rolesId.pc)
+        }else if(reaction.emoji.name === "🔵"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PS4${nodeColors.reset}'`)
+            member.roles.add(rolesId.ps4)
+        }else if(reaction.emoji.name === "🟢"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
+            member.roles.add(rolesId.xbox)
+        }else{
+            reaction.remove()
+        }
+    }else{
+        console.log(`ERROR: ${nodeColors.green}${user.tag}${nodeColors.reset} tried to gain role`)
+        console.log(user)
+    }
+}
+
+
+//Listener quand quelqu'un enleve une reaction 
+bot.on("messageReactionRemove", (reaction, user) => {
+    bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
+    if(reaction.message.id != messagesId.roles) return
+    removeRole(reaction, user)
+})
+async function removeRole(reaction, user){
+    let member = await getMemberById(reaction, user.id)
+    if(member){
+        if(reaction.emoji.name === "🟠"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PC${nodeColors.reset}'`)
+            member.roles.remove(rolesId.pc)
+        }else if(reaction.emoji.name === "🔵"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PS4${nodeColors.reset}'`)
+            member.roles.remove(rolesId.ps4)
+        }else if(reaction.emoji.name === "🟢"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
+            member.roles.remove(rolesId.xbox)
+        }
+    }else{
+        console.log(`ERROR: ${nodeColors.green}${user.tag}${nodeColors.reset} tried to remove role`)
+        console.log(user)
+    }
+}
+
+//Listener quand quelqu'un rejoint le serveur
+bot.on('guildMemberAdd', member => {
+    //On lui envoit un message de bienvenue
+    let messageEmbed = new Discord.MessageEmbed()
+    .setTitle("Bienvenue sur le Discord de Desastre_Show")
+    .setDescription(`Prenez 2 minutes pour lire les <#${channelsId.regles}> et indiquer votre plateforme pour avoir accès à la totalité du Discord.\n` +
+                    "Vous trouverez des canaux écrits pour discuter, partager et demander des conseils sur TESO.\n" +
+                    "Des canaux vocaux sont également a votre disposition pour jouer avec vos amis.\n\n" +
+                    "Desastre est en Live tous les jours de 20h à 23h sur Twitch : https://www.twitch.tv/desastre_show\n" +
+                    "Vous trouverez des Builds à jours, des Guides et Tutoriels sur https://desastreshow.com\n" +
+                    "Pour ceux qui préfère les vidéos, vous trouverez des Guides du Débutant, des infos et des news sur sa chaîne YouTube : https://www.youtube.com/c/Desastre")
+    .setThumbnail("https://i.ibb.co/qd3dW39/Logo-carr-Desastreshow.png")
+
+    console.log(`LOG: '${nodeColors.green}${member.user.tag}${nodeColors.reset}' got his welcome message`)
+    sendPrivateMessage(member, messageEmbed)
+})
 
 //Permet de récupérer une personne aléatoire parmis 100 réactions max d'un message
 async function getRandom(winners, startId, isSubRand, reaction, message){
@@ -208,80 +283,6 @@ bot.on('message', function (message) {
             })
         })
     }
-})
-
-async function getMemberById(reaction, id){
-    return await reaction.message.guild.members.cache.get(id)
-}
-
-//Listener quand quelqu'un ajoute une reaction 
-bot.on("messageReactionAdd", (reaction, user) => {
-    bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
-    if(reaction.message.id != messagesId.roles) return
-    addRole(reaction, user)
-})
-async function addRole(reaction, user){
-    let member = await getMemberById(reaction, user.id)
-    if(member){
-        if(reaction.emoji.name === "🟠"){
-            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
-            member.roles.add(rolesId.pc)
-        }else if(reaction.emoji.name === "🔵"){
-            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PS4${nodeColors.reset}'`)
-            member.roles.add(rolesId.ps4)
-        }else if(reaction.emoji.name === "🟢"){
-            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
-            member.roles.add(rolesId.xbox)
-        }else{
-            reaction.remove()
-        }
-    }else{
-        console.log(`ERROR: ${nodeColors.green}${user.tag}${nodeColors.reset} tried to gain role`)
-        console.log(user)
-    }
-}
-
-
-//Listener quand quelqu'un enleve une reaction 
-bot.on("messageReactionRemove", (reaction, user) => {
-    bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
-    if(reaction.message.id != messagesId.roles) return
-    removeRole(reaction, user)
-})
-async function removeRole(reaction, user){
-    let member = await getMemberById(reaction, user.id)
-    if(member){
-        if(reaction.emoji.name === "🟠"){
-            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PC${nodeColors.reset}'`)
-            member.roles.remove(rolesId.pc)
-        }else if(reaction.emoji.name === "🔵"){
-            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PS4${nodeColors.reset}'`)
-            member.roles.remove(rolesId.ps4)
-        }else if(reaction.emoji.name === "🟢"){
-            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
-            member.roles.remove(rolesId.xbox)
-        }
-    }else{
-        console.log(`ERROR: ${nodeColors.green}${user.tag}${nodeColors.reset} tried to remove role`)
-        console.log(user)
-    }
-}
-
-//Listener quand quelqu'un rejoint le serveur
-bot.on('guildMemberAdd', member => {
-    //On lui envoit un message de bienvenue
-    let messageEmbed = new Discord.MessageEmbed()
-    .setTitle("Bienvenue sur le Discord de Desastre_Show")
-    .setDescription(`Prenez 2 minutes pour lire les <#${channelsId.regles}> et indiquer votre plateforme pour avoir accès à la totalité du Discord.\n` +
-                    "Vous trouverez des canaux écrits pour discuter, partager et demander des conseils sur TESO.\n" +
-                    "Des canaux vocaux sont également a votre disposition pour jouer avec vos amis.\n\n" +
-                    "Desastre est en Live tous les jours de 20h à 23h sur Twitch : https://www.twitch.tv/desastre_show\n" +
-                    "Vous trouverez des Builds à jours, des Guides et Tutoriels sur https://desastreshow.com\n" +
-                    "Pour ceux qui préfère les vidéos, vous trouverez des Guides du Débutant, des infos et des news sur sa chaîne YouTube : https://www.youtube.com/c/Desastre")
-    .setThumbnail("https://i.ibb.co/qd3dW39/Logo-carr-Desastreshow.png")
-
-    console.log(`LOG: '${nodeColors.green}${member.user.tag}${nodeColors.reset}' got his welcome message`)
-    sendPrivateMessage(member, messageEmbed)
 })
 
 bot.login(process.env.DISCORD_TOKEN)
