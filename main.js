@@ -216,13 +216,13 @@ async function getMemberById(reaction, id){
 
 //Listener quand quelqu'un ajoute une reaction 
 bot.on("messageReactionAdd", (reaction, user) => {
+    console.log(reaction.message.id)
+    console.log(messagesId.roles)
     if(reaction.message.id != messagesId.roles) return
     addRole(reaction, user)
 })
 async function addRole(reaction, user){
-    console.log("Test 1")
     let member = await getMemberById(reaction, user.id)
-    console.log("Test 2")
     if(member){
         if(reaction.emoji.name === "🟠"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
