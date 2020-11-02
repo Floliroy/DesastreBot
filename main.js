@@ -215,7 +215,7 @@ async function getMemberById(reaction, id){
 }
 
 //Listener quand quelqu'un ajoute une reaction 
-bot.on("messageReactionAdd", async (reaction, user) => {
+bot.on("messageReactionAdd", (reaction, user) => {
     if(reaction.message.id != messagesId.roles) return
     console.log("Test 1")
     let member = await getMemberById(reaction, user.id)
@@ -240,7 +240,7 @@ bot.on("messageReactionAdd", async (reaction, user) => {
 })
 
 //Listener quand quelqu'un enleve une reaction 
-bot.on("messageReactionRemove", async (reaction, user) => {
+bot.on("messageReactionRemove", (reaction, user) => {
     if(reaction.message.id != messagesId.roles) return
 
     let member = await getMemberById(reaction, user.id)
