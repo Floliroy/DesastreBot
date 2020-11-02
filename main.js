@@ -63,14 +63,15 @@ function sendPrivateMessage(member, message){
     })
 }
 
+async function getMemberById(reaction, id){
+    return await reaction.message.guild.members.cache.get(id)
+}
+
 //Listener quand quelqu'un ajoute une reaction 
-bot.on("messageReactionAdd", (reaction, user) => {
+bot.on("messageReactionAdd", async function(reaction, user){
     if(reaction.message.id != messagesId.roles) return
-    
-    addRole(reaction, user)
-})
-async function addRole(reaction, user){
-    let member = await reaction.message.guild.members.cache.get(user.id)
+
+    let member = await getMemberById(reaction, user.id)
     if(member){
         if(reaction.emoji.name === "🟠"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
@@ -88,16 +89,13 @@ async function addRole(reaction, user){
         console.log(`ERROR: ${nodeColors.green}${user.tag}${nodeColors.reset} tried to gain role`)
         console.log(user)
     }
-}
+})
 
 //Listener quand quelqu'un enleve une reaction 
-bot.on("messageReactionRemove", (reaction, user) => {
+bot.on("messageReactionRemove", async function (reaction, user){
     if(reaction.message.id != messagesId.roles) return
-    
-    removeRole(reaction, user)
-})
-async function removeRole(reaction, user){
-    let member = await reaction.message.guild.members.cache.get(user.id)
+
+    let member = await getMemberById(reaction, user.id)
     if(member){
         if(reaction.emoji.name === "🟠"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PC${nodeColors.reset}'`)
@@ -113,7 +111,7 @@ async function removeRole(reaction, user){
         console.log(`ERROR: ${nodeColors.green}${user.tag}${nodeColors.reset} tried to remove role`)
         console.log(user)
     }
-}
+})
 
 //Listener quand quelqu'un rejoint le serveur
 bot.on('guildMemberAdd', member => {
