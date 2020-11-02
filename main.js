@@ -70,7 +70,7 @@ bot.on("messageReactionAdd", (reaction, user) => {
     addRole(reaction, user)
 })
 async function addRole(reaction, user){
-    let member = await reaction.message.guild.members.cache.get(id)
+    let member = await reaction.message.guild.members.cache.get(user.id)
     if(member){
         if(reaction.emoji.name === "🟠"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
@@ -97,7 +97,7 @@ bot.on("messageReactionRemove", (reaction, user) => {
     removeRole(reaction, user)
 })
 async function removeRole(reaction, user){
-    let member = await reaction.message.guild.members.cache.get(id)
+    let member = await reaction.message.guild.members.cache.get(user.id)
     if(member){
         if(reaction.emoji.name === "🟠"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PC${nodeColors.reset}'`)
