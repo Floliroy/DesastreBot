@@ -210,11 +210,15 @@ bot.on('message', function (message) {
     }
 })
 
+async function getMemberById(reaction, id){
+    return await reaction.message.guild.members.cache.get(id)
+}
+
 //Listener quand quelqu'un ajoute une reaction 
-bot.on("messageReactionAdd", (reaction, user) => {
+bot.on("messageReactionAdd", async (reaction, user) => {
     if(reaction.message.id != messagesId.roles) return
 
-    let member = reaction.message.guild.members.cache.get(user.id)
+    let member = await getMemberById(reaction, user.id)
     if(member){
         if(reaction.emoji.name === "🟠"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
@@ -235,10 +239,10 @@ bot.on("messageReactionAdd", (reaction, user) => {
 })
 
 //Listener quand quelqu'un enleve une reaction 
-bot.on("messageReactionRemove", (reaction, user) => {
+bot.on("messageReactionRemove", async (reaction, user) => {
     if(reaction.message.id != messagesId.roles) return
 
-    let member = reaction.message.guild.members.cache.get(user.id)
+    let member = await getMemberById(reaction, user.id)
     if(member){
         if(reaction.emoji.name === "🟠"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PC${nodeColors.reset}'`)
