@@ -1,6 +1,9 @@
 # DesastreBot
  Bot Discord pour le serveur de DesastreShow<br>
 
+- Version 1.0.3 :<br>
+Ajout d'une fonction permettant de récupérer les utilisateurs ayant réagis à un message donné<br>
+
 - Version 1.0.2 :<br>
 Ajout d'une fonction permettant un tirage au sorts sur les réactions d'un message donné<br>
 

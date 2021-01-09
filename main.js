@@ -1,16 +1,23 @@
 require('dotenv').config()
 
+const fs = require('fs')
+
 const Discord = require('discord.js')
 const bot = new Discord.Client()
 
-const GoogleSpreadsheet = require('google-spreadsheet')
+const {GoogleSpreadsheet} = require('google-spreadsheet')
 const doc = new GoogleSpreadsheet('1D3m2R1TZxh8_5pbTz8SXNuKTDU9mUGZAxrvSjKEyjnI')
 
-bot.on('ready', () => {
+bot.on('ready', async function(){
     console.log(`RUNNING: ${bot.user.tag}`)
     bot.user.setActivity("DesastreShow", {type: "WATCHING"})
     //Fetch sur le message ajoutant un role par reaction
     bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
+    //On se connecte au GDoc
+    await doc.useServiceAccountAuth({
+        client_email: process.env.GOOGLE_EMAIL, 
+        private_key: process.env.GOOGLE_TOKEN.replace(/\\n/g, '\n')
+    })
 })
 
 const nodeColors = {
@@ -58,7 +65,7 @@ function isAuthorised(member){
 }
 //Permet d'envoyer un message privé à la personne passé en paramètre
 function sendPrivateMessage(member, message){
-    member.createDM().then((DMChannel) => {
+    member.createDM().then(function(DMChannel){
         DMChannel.send(message)
     })
 }
@@ -114,7 +121,7 @@ bot.on("messageReactionRemove", async function (reaction, user){
 })
 
 //Listener quand quelqu'un rejoint le serveur
-bot.on('guildMemberAdd', member => {
+bot.on('guildMemberAdd', function(member){
     //On lui envoit un message de bienvenue
     let messageEmbed = new Discord.MessageEmbed()
     .setTitle("Bienvenue sur le Discord de Desastre_Show")
@@ -133,7 +140,7 @@ bot.on('guildMemberAdd', member => {
 //Permet de récupérer une personne aléatoire parmis 100 réactions max d'un message
 async function getRandom(winners, startId, isSubRand, reaction, message){
     let returnId
-    await reaction.users.fetch({after: startId}).then(users => {
+    await reaction.users.fetch({after: startId}).then(function(users){
         console.log(`LOG : Fetch ${users.size} users ...`)
         let winner
 
@@ -182,28 +189,8 @@ async function getWinners(isSubRand, reaction, message){
     return winners
 }
 
-//Permet d'afficher le gagnant d'un giveaway
-async function runGiveaway(isSubRand, reaction, message){
-    let winners = await getWinners(isSubRand, reaction, message)
-    const winner = winners[Math.floor(Math.random() * winners.length)]
-
-    message.delete()
-
-    if(isSubRand && !winner){
-        console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
-            + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results`
-            + `, but there is no '${nodeColors.red}Winner${nodeColors.reset}'`)
-        message.channel.send(`Pas de gagnant éligible pour ce tirage au sort ...`)
-    }else{
-        console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
-            + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results`
-            + `, and the winner is '${nodeColors.red}${winner.username}#${winner.discriminator}${nodeColors.reset}'`)
-        message.channel.send(`Bravo <@${winner.id}>, tu as gagné !`)
-    }
-}
-
 //Listener quand un message est envoyé sur le serveur
-bot.on('message', function (message) {
+bot.on('message', async function (message) {
     if(message.author.bot || message.channel instanceof Discord.DMChannel) return
 
     //////////////////////
@@ -214,66 +201,99 @@ bot.on('message', function (message) {
         let isSubRand = args[1] === "sub"
         let channelId = isSubRand ? args[2] : args[1]
 
-        bot.channels.cache.get(channelsId.giveaway).messages.fetch(channelId).then(msg => {
+        bot.channels.cache.get(channelsId.giveaway).messages.fetch(channelId).then(async function(msg){
             const reaction = msg.reactions.cache.get("✅")
-            runGiveaway(isSubRand, reaction, message)
+            let winners = await getWinners(isSubRand, reaction, message)
+            const winner = winners[Math.floor(Math.random() * winners.length)]
+
+            message.delete()
+
+            if(isSubRand && !winner){
+                console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
+                    + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results`
+                    + `, but there is no '${nodeColors.red}Winner${nodeColors.reset}'`)
+                message.channel.send(`Pas de gagnant éligible pour ce tirage au sort ...`)
+            }else{
+                console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' initiated a !rand `
+                    + `which get '${nodeColors.blue}${reaction.count}${nodeColors.reset}' results`
+                    + `, and the winner is '${nodeColors.red}${winner.username}#${winner.discriminator}${nodeColors.reset}'`)
+                message.channel.send(`Bravo <@${winner.id}>, tu as gagné !`)
+            }
             
         }).catch(function(err) {
             sendPrivateMessage(message.member, `L'ID du message '${channelId}' est incorrecte...`)
         })
+    /////////////////////////
+    //// REACTION ON MSG ////
+    /////////////////////////
+    }else if(message.content.startsWith("!react ") && (message.author.id === usersID.desastre || message.author.id === usersID.floliroy)){
+        const args = message.content.split(" ")
 
+        bot.channels.cache.get(channelsId.giveaway).messages.fetch(args[1]).then(async function(msg){
+            const reaction = msg.reactions.cache.get("🎁")
+            let response = ""
+            let startId = 0
+
+            message.delete()
+
+            for(let i=0 ; i<Math.floor(reaction.count/100)+1 ; i++){
+                await reaction.users.fetch({after: startId}).then(users => {
+                    for(let user of users.array()){
+                        response += `${user.username}#${user.discriminator}\n`
+                    }
+                    startId = users.last().id
+                })
+            }
+            fs.writeFile("participants.txt", response, function(err){
+                if(err) throw err
+                message.channel.send("Voici la liste des participants :", {files: ["./participants.txt"]})
+            })
+        }).catch(function(err) {
+            sendPrivateMessage(message.member, `L'ID du message '${args[1]}' est incorrecte...`)
+        })
     ////////////////////////
     //// COMMANDES GDOC ////
     ////////////////////////
     //On vérifie que c'est une commande qui est tapé
-    }else if(message.content.startsWith("!")){
-        //On prépare les credantials de google
-        const creds = {
-            client_email: process.env.GOOGLE_EMAIL, 
-            private_key: process.env.GOOGLE_TOKEN.replace(/\\n/g, '\n')
-        }
-        //On se connecte au document
-        doc.useServiceAccountAuth(creds, function(err) {
-            if(err) console.log(err)
-            //On récupère les lignes du document
-            doc.getRows(1, function(err, rows) {
-                //On parcours toutes les lignes du document
-                rows.forEach(function(row){
-                    if(message.content === row.commande){
-                        message.delete()
-                        console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' `
-                                    + `attempt to use '${nodeColors.red}${message.content}${nodeColors.reset}' ` 
-                                    + `in the channel '${nodeColors.blue}${message.channel.name}${nodeColors.reset}' ` 
-                                    + `of the server '${nodeColors.blue}${message.channel.guild.name}${nodeColors.reset}'`)
-                        //On regarde si l'utilisateur a le rang nécessaire
-                        if(isAuthorised(message.member)){
-                            //On regarde si le message doit etre un Embed ou non
-                            if(row.embed === "TRUE"){
-                                let messageEmbed = new Discord.MessageEmbed()
-                                .setTitle(row.titre)
-                                .setDescription(row.message)
-                                //On regarde si l'image est une Miniature ou non
-                                if(row.miniature === "TRUE"){
-                                    messageEmbed.setThumbnail(row.image)
-                                }else{
-                                    messageEmbed.setImage(row.image)
-                                }
-                                //Si c'est la commande help on envoit en mp
-                                if(row.commande === "!help"){
-                                    sendPrivateMessage(message.member, messageEmbed)
-                                }else{
-                                    return message.channel.send(messageEmbed)
-                                }
-                            }else{
-                                return message.channel.send(row.message)
-                            }   
+    }else if(message.content.startsWith("!")){        
+        await doc.loadInfo()
+        const sheet = doc.sheetsByIndex[0]
+        const rows = await sheet.getRows()
+
+        for(let row of rows){
+            if(message.content === row.Commande){
+                message.delete()
+                console.log(`LOG: '${nodeColors.green}${message.author.tag}${nodeColors.reset}' `
+                            + `attempt to use '${nodeColors.red}${message.content}${nodeColors.reset}' ` 
+                            + `in the channel '${nodeColors.blue}${message.channel.name}${nodeColors.reset}' ` 
+                            + `of the server '${nodeColors.blue}${message.channel.guild.name}${nodeColors.reset}'`)
+                //On regarde si l'utilisateur a le rang nécessaire
+                if(isAuthorised(message.member)){
+                    //On regarde si le message doit etre un Embed ou non
+                    if(row.Embed === "TRUE"){
+                        let messageEmbed = new Discord.MessageEmbed()
+                        .setTitle(row.Titre)
+                        .setDescription(row.Message)
+                        //On regarde si l'image est une Miniature ou non
+                        if(row.Miniature === "TRUE"){
+                            messageEmbed.setThumbnail(row.Image)
                         }else{
-                            sendPrivateMessage(message.member, `Tu n'as pas les droits nécessaire pour exécuter la commande \`${row.commande}\``)
+                            messageEmbed.setImage(row.Image)
                         }
-                    }
-                })
-            })
-        })
+                        //Si c'est la commande help on envoit en mp
+                        if(row.Commande === "!help"){
+                            sendPrivateMessage(message.member, messageEmbed)
+                        }else{
+                            return message.channel.send(messageEmbed)
+                        }
+                    }else{
+                        return message.channel.send(row.Message)
+                    }   
+                }else{
+                    sendPrivateMessage(message.member, `Tu n'as pas les droits nécessaire pour exécuter la commande \`${row.commande}\``)
+                }
+            }
+        }
     }
 })
 
