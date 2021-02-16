@@ -59,7 +59,7 @@ const guildsId = {
 const channelsId = {
     regles: "489125908666515456",
     giveaway : "708625146432454707",
-    membres: "811263189001437233",
+    membres: "811274377840164915",
 }
 
 const usersID = {
