@@ -13,6 +13,10 @@ bot.on('ready', async function(){
     bot.user.setActivity("DesastreShow", {type: "WATCHING"})
     //Fetch sur le message ajoutant un role par reaction
     bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
+    //On met a jour le salon Membres
+    bot.channels.cache.get(channelsId.membres).edit({
+        name: `Membres : ${bot.guilds.cache.get(guildsId.desastre).memberCount}`
+    })
     //On se connecte au GDoc
     await doc.useServiceAccountAuth({
         client_email: process.env.GOOGLE_EMAIL, 
@@ -48,9 +52,14 @@ const messagesId = {
     roles: "707955881677029446",
 }
 
+const guildsId = {
+    desastre: "146004947870154752",
+}
+
 const channelsId = {
     regles: "489125908666515456",
     giveaway : "708625146432454707",
+    membres: "811263189001437233",
 }
 
 const usersID = {
@@ -121,7 +130,12 @@ bot.on("messageReactionRemove", async function (reaction, user){
 })
 
 //Listener quand quelqu'un rejoint le serveur
-bot.on('guildMemberAdd', function(member){
+bot.on("guildMemberRemove", function(member){
+    //On met a jour le salon Membres
+    bot.channels.cache.get(channelsId.membres).edit({
+        name: `Membres : ${bot.guilds.cache.get(guildsId.desastre).memberCount}`
+    })
+
     //On lui envoit un message de bienvenue
     let messageEmbed = new Discord.MessageEmbed()
     .setTitle("Bienvenue sur le Discord de Desastre_Show")
@@ -135,6 +149,14 @@ bot.on('guildMemberAdd', function(member){
 
     console.log(`LOG: '${nodeColors.green}${member.user.tag}${nodeColors.reset}' got his welcome message`)
     sendPrivateMessage(member, messageEmbed)
+})
+
+//Listener quand quelqu'un quitte le serveur
+bot.on("guildMemberAdd", function(member){
+    //On met a jour le salon Membres
+    bot.channels.cache.get(channelsId.membres).edit({
+        name: `Membres : ${bot.guilds.cache.get(guildsId.desastre).memberCount}`
+    })
 })
 
 //Permet de récupérer une personne aléatoire parmis 100 réactions max d'un message
