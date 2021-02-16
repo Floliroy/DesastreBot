@@ -130,7 +130,7 @@ bot.on("messageReactionRemove", async function (reaction, user){
 })
 
 //Listener quand quelqu'un rejoint le serveur
-bot.on("guildMemberRemove", function(member){
+bot.on("guildMemberAdd", function(member){
     //On met a jour le salon Membres
     bot.channels.cache.get(channelsId.membres).edit({
         name: `Membres : ${bot.guilds.cache.get(guildsId.desastre).memberCount}`
@@ -152,7 +152,7 @@ bot.on("guildMemberRemove", function(member){
 })
 
 //Listener quand quelqu'un quitte le serveur
-bot.on("guildMemberAdd", function(member){
+bot.on("guildMemberRemove", function(member){
     //On met a jour le salon Membres
     bot.channels.cache.get(channelsId.membres).edit({
         name: `Membres : ${bot.guilds.cache.get(guildsId.desastre).memberCount}`
