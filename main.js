@@ -80,36 +80,24 @@ function sendPrivateMessage(member, message){
 }
 
 async function getMemberById(reaction, id){
-    return reaction.message.guild.members.cache.get(id)
+    return await reaction.message.guild.members.cache.get(id)
 }
-
-async function addRole(member, roleId){
-   do{
-       await member.roles.add(roleId)
-   }while(!member.roles.cache.has(roleId))
-}    
-
-async function removeRole(member, roleId){
-   do{
-       await member.roles.remove(roleId)
-   }while(member.roles.cache.has(roleId))
-}    
 
 //Listener quand quelqu'un ajoute une reaction 
 bot.on("messageReactionAdd", async function(reaction, user){
     if(reaction.message.id != messagesId.roles) return
 
-    let member = getMemberById(reaction, user.id)
+    let member = await getMemberById(reaction, user.id)
     if(member){
         if(reaction.emoji.name === "🟠"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PC${nodeColors.reset}'`)
-            addRole(member, rolesId.pc)
+            member.roles.add(rolesId.pc)
         }else if(reaction.emoji.name === "🔵"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}PS4${nodeColors.reset}'`)
-            addRole(member, rolesId.ps4)
+            member.roles.add(rolesId.ps4)
         }else if(reaction.emoji.name === "🟢"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
-            addRole(member, rolesId.xbox)
+            member.roles.add(rolesId.xbox)
         }else{
             reaction.remove()
         }
@@ -123,17 +111,17 @@ bot.on("messageReactionAdd", async function(reaction, user){
 bot.on("messageReactionRemove", async function (reaction, user){
     if(reaction.message.id != messagesId.roles) return
 
-    let member = getMemberById(reaction, user.id)
+    let member = await getMemberById(reaction, user.id)
     if(member){
         if(reaction.emoji.name === "🟠"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PC${nodeColors.reset}'`)
-            removeRole(member, rolesId.pc)
+            member.roles.remove(rolesId.pc)
         }else if(reaction.emoji.name === "🔵"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}PS4${nodeColors.reset}'`)
-            removeRole(member, rolesId.ps4)
+            member.roles.remove(rolesId.ps4)
         }else if(reaction.emoji.name === "🟢"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
-            removeRole(member, rolesId.xbox)
+            member.roles.remove(rolesId.xbox)
         }
     }else{
         console.log(`ERROR: ${nodeColors.green}${user.tag}${nodeColors.reset} tried to remove role`)
@@ -217,7 +205,7 @@ async function getWinners(isSubRand, reaction, message){
 
     let lastId
     for(let i=0 ; i<Math.floor(reaction.count/100)+1 ; i++){
-        lastId = getRandom(winners, (lastId?lastId:0), isSubRand, reaction, message)
+        lastId = await getRandom(winners, (lastId?lastId:0), isSubRand, reaction, message)
     }
 
     return winners
@@ -237,7 +225,7 @@ bot.on('message', async function (message) {
 
         bot.channels.cache.get(channelsId.giveaway).messages.fetch(channelId).then(async function(msg){
             const reaction = msg.reactions.cache.get("✅")
-            let winners = getWinners(isSubRand, reaction, message)
+            let winners = await getWinners(isSubRand, reaction, message)
             const winner = winners[Math.floor(Math.random() * winners.length)]
 
             message.delete()
