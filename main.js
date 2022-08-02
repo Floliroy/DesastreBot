@@ -127,6 +127,9 @@ bot.on("messageReactionRemove", async function (reaction, user){
         }else if(reaction.emoji.name === "🟢"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
             member.roles.remove(rolesId.xbox)
+        }else if(reaction.emoji.name === "desastreEcostream"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' lost role '${nodeColors.blue}EcoStream${nodeColors.reset}'`)
+            member.roles.remove(rolesId.eco)
         }
     }else{
         console.log(`ERROR: ${nodeColors.green}${user.tag}${nodeColors.reset} tried to remove role`)
