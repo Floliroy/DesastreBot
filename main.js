@@ -103,7 +103,6 @@ bot.on("messageReactionAdd", async function(reaction, user){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}EcoStream${nodeColors.reset}'`)
             member.roles.add(rolesId.eco)
         }else{
-            console.log(reaction)
             reaction.remove()
         }
     }else{
