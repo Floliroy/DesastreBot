@@ -46,7 +46,7 @@ const rolesId = {
     pc: "428584658003820545",
     ps4: "428584774848872458",
     xbox: "428584720125919243",
-    eco: "",
+    eco: "1003996572914286612",
 }
 
 const messagesId = {
@@ -99,6 +99,9 @@ bot.on("messageReactionAdd", async function(reaction, user){
         }else if(reaction.emoji.name === "🟢"){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
             member.roles.add(rolesId.xbox)
+        }else if(reaction.emoji.name === "desastreEcostream"){
+            console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}EcoStream${nodeColors.reset}'`)
+            member.roles.add(rolesId.eco)
         }else{
             console.log(reaction)
             reaction.remove()
