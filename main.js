@@ -20,7 +20,7 @@ bot.on('ready', async function(){
     const msg = await bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
     const embed = new Discord.MessageEmbed()
         .setTitle("VOS RÔLES")
-        .setDescription("Merci d'indiquer votre plateforme en réagissant à ce message :\n**PC** :orange_circle: │ **PS4** :blue_circle: │**XBOX** :green_circle:\n\nSi vous voulez suivre l'actualité des Ecostreams, vous pouvez obtenir le rôle <@&1003996572914286612> en cliquant sur le logo !")
+        .setDescription("Pour avoir accès à tous les channels merci d'indiquer votre plateforme en réagissant à ce message :\n**PC** :orange_circle: │ **PS4** :blue_circle: │**XBOX** :green_circle:\n\nSi vous voulez suivre l'actualité des Ecostreams, vous pouvez obtenir le rôle <@&1003996572914286612> en cliquant sur le logo !")
         .setThumbnail("https://download.seaicons.com/icons/paomedia/small-n-flat/1024/gamepad-icon.png")
     msg.edit(embed)
     //On se connecte au GDoc
