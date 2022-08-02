@@ -18,7 +18,7 @@ bot.on('ready', async function(){
         name: `Membres : ${bot.guilds.cache.get(guildsId.desastre).memberCount}`
     })
     const msg = await bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
-    const icone = client.emojis.cache.find(emoji => emoji.name === "desastreEcostream");
+    const icone = bot.emojis.cache.find(emoji => emoji.name === "desastreEcostream");
     const embed = new Discord.MessageEmbed()
         .setTitle("VOS RÔLES")
         .setDescription(`Merci d'indiquer votre plateforme en réagissant à ce message :\n**PC** :orange_circle: │ **PS4** :blue_circle: │**XBOX** :green_circle:\n\nVous pouvez récupérer le rôle <@&1003996572914286612> en cliquant sur ${icone}`)
