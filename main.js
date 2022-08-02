@@ -17,6 +17,12 @@ bot.on('ready', async function(){
     bot.channels.cache.get(channelsId.membres).edit({
         name: `Membres : ${bot.guilds.cache.get(guildsId.desastre).memberCount}`
     })
+    const msg = await bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
+    const embed = new Discord.MessageEmbed()
+        .setTitle("VOTRE RÔLES")
+        .setDescription("Merci d'indiquer votre plateforme en réagissant à ce message : \n\n **PC** :orange_circle: │ **PS4** :blue_circle: │**XBOX** :green_circle:\n\nVous pouvez récupérer le rôle <@&1003996572914286612> en cliquant sur :desastreEcostream:")
+        .setThumbnail("https://download.seaicons.com/icons/paomedia/small-n-flat/1024/gamepad-icon.png")
+    msg.edit(embed)
     //On se connecte au GDoc
     await doc.useServiceAccountAuth({
         client_email: process.env.GOOGLE_EMAIL, 
