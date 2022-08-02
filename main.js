@@ -19,7 +19,7 @@ bot.on('ready', async function(){
     })
     const msg = await bot.channels.cache.get(channelsId.regles).messages.fetch(messagesId.roles)
     const embed = new Discord.MessageEmbed()
-        .setTitle("VOTRE RÔLES")
+        .setTitle("VOS RÔLES")
         .setDescription("Merci d'indiquer votre plateforme en réagissant à ce message : \n\n **PC** :orange_circle: │ **PS4** :blue_circle: │**XBOX** :green_circle:\n\nVous pouvez récupérer le rôle <@&1003996572914286612> en cliquant sur :desastreEcostream:")
         .setThumbnail("https://download.seaicons.com/icons/paomedia/small-n-flat/1024/gamepad-icon.png")
     msg.edit(embed)
