@@ -46,6 +46,7 @@ const rolesId = {
     pc: "428584658003820545",
     ps4: "428584774848872458",
     xbox: "428584720125919243",
+    eco: "",
 }
 
 const messagesId = {
@@ -99,6 +100,7 @@ bot.on("messageReactionAdd", async function(reaction, user){
             console.log(`LOG: '${nodeColors.green}${user.tag}${nodeColors.reset}' gain role '${nodeColors.blue}XBOX${nodeColors.reset}'`)
             member.roles.add(rolesId.xbox)
         }else{
+            console.log(reaction)
             reaction.remove()
         }
     }else{
@@ -152,7 +154,7 @@ bot.on("guildMemberAdd", function(member){
 })
 
 //Listener quand quelqu'un quitte le serveur
-bot.on("guildMemberRemove", function(member){
+bot.on("guildMemberRemove", function(_member){
     //On met a jour le salon Membres
     bot.channels.cache.get(channelsId.membres).edit({
         name: `Membres : ${bot.guilds.cache.get(guildsId.desastre).memberCount}`
@@ -242,7 +244,7 @@ bot.on('message', async function (message) {
                 message.channel.send(`Bravo <@${winner.id}>, tu as gagné !`)
             }
             
-        }).catch(function(err) {
+        }).catch(function(_err) {
             sendPrivateMessage(message.member, `L'ID du message '${channelId}' est incorrecte...`)
         })
     /////////////////////////
@@ -270,7 +272,7 @@ bot.on('message', async function (message) {
                 if(err) throw err
                 message.channel.send("Voici la liste des participants :", {files: ["./participants.txt"]})
             })
-        }).catch(function(err) {
+        }).catch(function(_err) {
             sendPrivateMessage(message.member, `L'ID du message '${args[1]}' est incorrecte...`)
         })
     ////////////////////////
