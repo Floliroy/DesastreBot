@@ -28,11 +28,6 @@ bot.on('ready', async function(){
         client_email: process.env.GOOGLE_EMAIL, 
         private_key: process.env.GOOGLE_TOKEN.replace(/\\n/g, '\n')
     })
-
-    const mes = await bot.channels.cache.get(channelsId.giveaway).messages.fetch("1053018147634024488")
-    const e = mes.embeds[0]
-    e.setTitle("GIVEAWAY 1.500 COURONNES !")
-    mes.edit(e)
 })
 
 const nodeColors = {
