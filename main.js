@@ -237,10 +237,9 @@ bot.on('message', async function (message) {
         let channelId = isSubRand ? args[2] : args[1]
 
         bot.channels.cache.get(channelsId.giveaway).messages.fetch(channelId).then(async function(msg){
-            const reaction = msg.reactions.cache.get("✅")
+            let reaction = msg.reactions.cache.get("✅") || msg.reactions.cache.get("🟠") || msg.reactions.cache.get("🔵") ||  msg.reactions.cache.get("🟢")
             let winners = await getWinners(isSubRand, reaction, message)
             const winner = winners[Math.floor(Math.random() * winners.length)]
-
             message.delete()
 
             if(isSubRand && !winner){
